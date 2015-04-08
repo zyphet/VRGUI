@@ -16,6 +16,10 @@ class VR_GUI_API AVRWidget : public AActor
 public:
 	AVRWidget(const FObjectInitializer& ObjectInitializer);
 
+	FVector GetWidgetCanvasCoords();
+
+	FString GetWidgetName();
+
 	void SetWidgetName(FString name);
 	void SetWidgetLocation(FVector loc, float X, float Y);
 	void SetWidgetScale(FVector scale);

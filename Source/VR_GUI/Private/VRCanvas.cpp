@@ -32,18 +32,29 @@ AVRCanvas::AVRCanvas(const FObjectInitializer& ObjectInitializer)
 }
 
 //-----------------Create widgets here-------------------//
-//Might have a seperate class for creating widgets later//
+//Might have a seperate class for creating/adding widgets later//
 
 void AVRCanvas::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ResizeCanvas(500, 300, 400);
+	//Resize Canvas
+	ResizeCanvas(432, 243, 400);
 
+	//Layer Creation
 	AlwaysVisibleLayer.LayerName = "AlwaysVisible";
-
 	AddWidgetLayer("CanvasPropertyWidgets", true);
-	AddWidgetLayer("TestLayer", false);
+
+	//Layer Toggle Button
+
+	AVRButton* LayerButton = Cast<AVRButton>(GetWorld()->SpawnActor(AVRButton::StaticClass()));
+	AddWidget(LayerButton, 360, 10, "LayerToggle", "AlwaysVisible");
+
+	BindWidgetToLayerToggle(LayerButton);
+
+	//-----------------------
+	//Widgets for editing Canvas Appearence
+	//-----------------------
 
 	//Checkbox for Visiblity
 
@@ -54,56 +65,67 @@ void AVRCanvas::BeginPlay()
 
 	BindWidgetToVisibility(VisibleCheckbox);
 
-	//Checkbox for Colors and Transparency
+	AVRText* VisibleText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	AddWidget(VisibleText, 45, 40, "VisText", "CanvasPropertyWidgets");
+
+	VisibleText->SetText("Background");
+
+	//------Sliders for Colors and Transparency-----//
 	//Red
 
 	AVRSlider* RSlider = Cast<AVRSlider>(GetWorld()->SpawnActor(AVRSlider::StaticClass()));
-	AddWidget(RSlider, 20, 50, TEXT("Red"), "CanvasPropertyWidgets");
+	AddWidget(RSlider, 20, 50, "Red", "CanvasPropertyWidgets");
 
 	RSlider->ChangeSliderLength(100);
 
 	BindWidgetToRed(RSlider);
 
+	AVRText* RedText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	AddWidget(RedText, 150, 70, "RedText", "CanvasPropertyWidgets");
+
+	RedText->SetText("Red");
+
 	//Green
 
 	AVRSlider* GSlider = Cast<AVRSlider>(GetWorld()->SpawnActor(AVRSlider::StaticClass()));
-	AddWidget(GSlider, 20, 80, TEXT("Green"), "CanvasPropertyWidgets");
+	AddWidget(GSlider, 20, 80, "Green", "CanvasPropertyWidgets");
 
 	GSlider->ChangeSliderLength(100);
 
 	BindWidgetToGreen(GSlider);
 
+	AVRText* GreenText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	AddWidget(GreenText, 150, 100, "GreenText", "CanvasPropertyWidgets");
+
+	GreenText->SetText("Green");
+
 	//Blue
 
 	AVRSlider* BSlider = Cast<AVRSlider>(GetWorld()->SpawnActor(AVRSlider::StaticClass()));
-	AddWidget(BSlider, 20, 110, TEXT("Blue"), "CanvasPropertyWidgets");
+	AddWidget(BSlider, 20, 110, "Blue", "CanvasPropertyWidgets");
 
 	BSlider->ChangeSliderLength(100);
 
 	BindWidgetToBlue(BSlider);
 
+	AVRText* BlueText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	AddWidget(BlueText, 150, 130, "BlueText", "CanvasPropertyWidgets");
+
+	BlueText->SetText("Blue");
+
 	//Alpha
 
 	AVRSlider* AlphaSlider = Cast<AVRSlider>(GetWorld()->SpawnActor(AVRSlider::StaticClass()));
-	AddWidget(AlphaSlider, 20, 140, TEXT("Alpha"), "CanvasPropertyWidgets");
+	AddWidget(AlphaSlider, 20, 140, "Alpha", "CanvasPropertyWidgets");
 
 	AlphaSlider->ChangeSliderLength(100);
 
 	BindWidgetToTransparency(AlphaSlider);
 
-	//Layer Toggle Button
+	AVRText* AlphaText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	AddWidget(AlphaText, 150, 160, "AlphaText", "CanvasPropertyWidgets");
 
-	AVRButton* LayerButton = Cast<AVRButton>(GetWorld()->SpawnActor(AVRButton::StaticClass()));
-	AddWidget(LayerButton, 400, 20, "LayerToggle", "AlwaysVisible");
-
-	BindWidgetToLayerToggle(LayerButton);
-
-	//Test Button added to Test Layer
-	
-	//It would probably be good to combine these two lines into one. Put first line inside
-	//AddWidget() and specify the type of widget as a parameter
-	AVRButton* TestButton = Cast<AVRButton>(GetWorld()->SpawnActor(AVRButton::StaticClass()));
-	AddWidget(TestButton, 0, 0, "TestButton", "TestLayer");
+	AlphaText->SetText("Alpha");
 }
 
 //-----------------------------------------------------//
@@ -152,6 +174,16 @@ void AVRCanvas::UpdateCanvasProperties()
 		if (ToggleLayerButton->ButtonClicked())
 		{
 			ToggleVisibleLayers();
+		}
+	}
+
+	AVRKnob* Knob = Cast<AVRKnob>(GetWidget("Knob"));
+
+	if (Knob)
+	{
+		if (Knob->ButtonClicked())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, "Knob Button Clicked");
 		}
 	}
 }
@@ -225,6 +257,27 @@ void AVRCanvas::AddWidget(AVRWidget* AWidget, float X, float Y, FString Name, FS
 	}
 	else
 		AlwaysVisibleLayer.WidgetsInLayer.Add(AWidget);
+}
+
+AVRWidget* AVRCanvas::GetWidget(FString Name)
+{
+	AVRWidget* FoundWidget;
+
+	for (int32 i = 0; i < WidgetArray.Num(); i++)
+	{
+		FoundWidget = WidgetArray[i];
+
+		if (!WidgetArray[i])
+			continue;
+
+		if (!WidgetArray[i]->IsValidLowLevel())
+			continue;
+
+		if (FoundWidget->GetWidgetName() == Name)
+			return FoundWidget;
+	}
+
+	return NULL;
 }
 
 void AVRCanvas::AddWidgetLayer(FString Name, bool bVisible)
@@ -343,6 +396,21 @@ void AVRCanvas::ToggleVisibleLayers()
 	{
 		SetWidgetLayerVisibility((*Iter), true);
 		return;
+	}
+}
+
+void AVRCanvas::ShowLayer(FWidgetLayer &Layer)
+{
+	HideAllLayers();
+
+	SetWidgetLayerVisibility(Layer, true);
+}
+
+void AVRCanvas::HideAllLayers()
+{
+	for (auto Iter(WidgetLayers.CreateIterator()); Iter; Iter++)
+	{
+		SetWidgetLayerVisibility((*Iter), false);
 	}
 }
 

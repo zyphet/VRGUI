@@ -12,4 +12,10 @@ AVR_GUIGameMode::AVR_GUIGameMode(const FObjectInitializer& ObjectInitializer)
 	DefaultPawnClass = AVRPawn::StaticClass();
 }
 
+void AVR_GUIGameMode::BeginPlay()
+{
+	Super::BeginPlay();
 
+	//Create Lock Application
+	Cast<AVRLock>(GetWorld()->SpawnActor(AVRLock::StaticClass()));
+}

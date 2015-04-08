@@ -11,9 +11,21 @@ AVRWidget::AVRWidget(const FObjectInitializer& ObjectInitializer)
 	WidgetScale = FVector(1, 1, 1);
 }
 
+FString AVRWidget::GetWidgetName()
+{
+	return WidgetName;
+}
+
 void AVRWidget::SetWidgetName(FString name)
 {
 	WidgetName = name;
+}
+
+FVector AVRWidget::GetWidgetCanvasCoords()
+{
+	FVector Loc = FVector(CoordX, CoordY, 0);
+
+	return Loc;
 }
 
 void AVRWidget::SetWidgetLocation(FVector WorldLoc, float X, float Y)

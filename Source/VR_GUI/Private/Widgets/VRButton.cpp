@@ -21,7 +21,7 @@ AVRButton::AVRButton(const FObjectInitializer& ObjectInitializer)
 
 	Button->AttachTo(Root);
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("Material'/Game/GUI/Materials/Mat_Button.Mat_Button'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("Material'/Game/GUI/Materials/Mat_MetalButton2.Mat_MetalButton2'"));
 
 	ButtonMat = Button->CreateDynamicMaterialInstance(0, Mat.Object);
 
@@ -33,6 +33,11 @@ void AVRButton::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Button->SetVisibility(bWidgetVisibility);
+
+	if (bWidgetVisibility)
+		Button->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	else
+		Button->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 bool AVRButton::ButtonClicked()
@@ -42,7 +47,7 @@ bool AVRButton::ButtonClicked()
 	if (bWidgetClicked)
 	{
 		bClicked = true;
-		ButtonMat->SetVectorParameterValue("Color", FLinearColor(1, 0, 0, 1));
+		ButtonMat->SetVectorParameterValue("Color", FLinearColor(.1, .1, .1, 1));
 		return false;
 	}
 	//to determine when button is released, which is when we return true

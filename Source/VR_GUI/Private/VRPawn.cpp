@@ -22,13 +22,8 @@ AVRPawn::AVRPawn(const FObjectInitializer& ObjectInitializer)
 void AVRPawn::BeginPlay()
 {
 	//Spawn the canvas
-
-	FVector CanvasLoc = FVector(0, 0, 0);
-	FRotator CanvasRot = FRotator(0, 0, 0);
-
-	Canvas = Cast<AVRCanvas>(GetWorld()->SpawnActor(AVRCanvas::StaticClass(), &CanvasLoc, &CanvasRot));
-
-	Canvas->AttachRootComponentToActor(Controller->GetPawn(), NAME_None, EAttachLocation::KeepWorldPosition);
+	PlayerCanvas = Cast<AVRCanvas>(GetWorld()->SpawnActor(AVRCanvas::StaticClass()));
+	PlayerCanvas->AttachRootComponentToActor(this, NAME_None, EAttachLocation::KeepWorldPosition);
 }
 
 void AVRPawn::SetupPlayerInputComponent(UInputComponent* InputComponent)
@@ -72,5 +67,5 @@ void AVRPawn::Exit()
 
 AVRCanvas* AVRPawn::GetCanvas()
 {
-	return Canvas;
+	return PlayerCanvas;
 }

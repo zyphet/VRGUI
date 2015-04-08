@@ -7,6 +7,8 @@
 #include "VRCheckbox.h"
 #include "VRSlider.h"
 #include "VRButton.h"
+#include "VRKnob.h"
+#include "VRText.h"
 #include "VRCanvas.generated.h"
 
 USTRUCT()
@@ -68,12 +70,15 @@ public:
 
 	void AddWidget(AVRWidget* AWidget, float X, float Y, FString Name);
 	void AddWidget(AVRWidget* AWidget, float X, float Y, FString Name, FString LayerName);
+	AVRWidget* GetWidget(FString Name);
 	
 	void AddWidgetLayer(FString Name, bool bVisible);
 	FWidgetLayer* GetWidgetLayer(FString Name);
 	void SetWidgetLayerVisibility(FString LayerName, bool bValue);
 	void SetWidgetLayerVisibility(FWidgetLayer &LayerName, bool bValue);
 	void ToggleVisibleLayers();
+	void HideAllLayers();
+	void ShowLayer(FWidgetLayer &Layer);
 
 	void BindWidgetToVisibility(AVRWidget* VisibilityWidget);
 	void BindWidgetToRed(AVRWidget* RedWidget);

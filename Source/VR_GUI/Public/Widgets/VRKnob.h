@@ -14,6 +14,24 @@ class VR_GUI_API AVRKnob : public AVRWidget
 	GENERATED_BODY()
 	
 	AVRKnob(const FObjectInitializer& ObjectInitializer);
+	virtual void Tick(float DeltaSeconds) override;
+
+public:
+	bool ButtonClicked();
+
+	float GetAngle();
 	
+private:
+	class UStaticMeshComponent* Button;
+	class UStaticMeshComponent* Ring;
+	class UStaticMeshComponent* Marker;
+
+	UMaterialInstanceDynamic* ButtonMat;
+
+	void MoveMarker();
+
+	float KnobAngle;
+
+	bool bClicked;
 	
 };

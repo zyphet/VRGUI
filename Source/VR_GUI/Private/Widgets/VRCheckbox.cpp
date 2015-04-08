@@ -28,7 +28,7 @@ AVRCheckbox::AVRCheckbox(const FObjectInitializer& ObjectInitializer)
 	CheckboxMesh->AttachTo(Root);
 
 	bChecked = true;
-	CheckMesh->bVisible = bChecked;
+	CheckMesh->SetVisibility(bChecked);
 }
 
 void AVRCheckbox::Tick(float DeltaSeconds)
@@ -43,24 +43,26 @@ void AVRCheckbox::Tick(float DeltaSeconds)
 
 	if (bWidgetVisibility)
 	{
-		if (IsChecked())
-		{
-			CheckMesh->SetVisibility(true);
-		}
-		
+		CheckMesh->SetVisibility(bChecked);
 		CheckboxMesh->SetVisibility(true);
+
+		CheckMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		CheckboxMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else
 	{
 		CheckMesh->SetVisibility(false);
 		CheckboxMesh->SetVisibility(false);
+
+		CheckMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CheckboxMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
 void AVRCheckbox::ToggleCheck()
 {
 	bChecked = !bChecked;
-	CheckMesh->ToggleVisibility();
+	CheckMesh->SetVisibility(bChecked);
 }
 
 bool AVRCheckbox::IsChecked()
