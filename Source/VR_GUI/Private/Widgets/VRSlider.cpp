@@ -77,11 +77,6 @@ void AVRSlider::Tick(float DeltaSeconds)
 	SliderEnd->SetVisibility(bWidgetVisibility);
 	SliderBar->SetVisibility(bWidgetVisibility);
 	SliderBall->SetVisibility(bWidgetVisibility);
-
-	if (bWidgetVisibility)
-		SliderBall->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	else
-		SliderBall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AVRSlider::ChangeSliderLength(float BarLength)

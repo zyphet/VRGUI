@@ -45,17 +45,11 @@ void AVRCheckbox::Tick(float DeltaSeconds)
 	{
 		CheckMesh->SetVisibility(bChecked);
 		CheckboxMesh->SetVisibility(true);
-
-		CheckMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		CheckboxMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else
 	{
 		CheckMesh->SetVisibility(false);
 		CheckboxMesh->SetVisibility(false);
-
-		CheckMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		CheckboxMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 

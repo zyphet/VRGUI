@@ -18,8 +18,6 @@ class VR_GUI_API AVRKnob : public AVRWidget
 
 public:
 	bool ButtonClicked();
-
-	float GetAngle();
 	
 private:
 	class UStaticMeshComponent* Button;
@@ -29,8 +27,6 @@ private:
 	UMaterialInstanceDynamic* ButtonMat;
 
 	void MoveMarker();
-
-	float KnobAngle;
 
 	bool bClicked;
 	

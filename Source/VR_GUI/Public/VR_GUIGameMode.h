@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/GameMode.h"
-#include "VRLock.h"
 #include "VR_GUIGameMode.generated.h"
 
 /**
@@ -15,5 +14,5 @@ class VR_GUI_API AVR_GUIGameMode : public AGameMode
 	GENERATED_BODY()
 
 	AVR_GUIGameMode(const FObjectInitializer& ObjectInitializer);
-	virtual void BeginPlay() override;
+	
 };
