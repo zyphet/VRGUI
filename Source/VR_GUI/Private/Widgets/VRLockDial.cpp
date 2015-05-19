@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "VR_GUI.h"
-#include "VRButton.h"
+#include "VRLockDial.h"
 
-AVRButton::AVRButton(const FObjectInitializer& ObjectInitializer)
+AVRLockDial::AVRLockDial(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -11,7 +11,14 @@ AVRButton::AVRButton(const FObjectInitializer& ObjectInitializer)
 	USceneComponent* Root = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("Root"));
 	RootComponent = Root;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ButtonM(TEXT("StaticMesh'/Game/GUI/Meshes/Button/Button.Button'"));
+	/*static ConstructorHelpers::FObjectFinder<UBlueprint> DialObject(TEXT("Blueprint'/Game/Blueprints/ClickableNumber.ClickableNumber'"));
+
+	if (DialObject.Object != NULL)
+	{
+		Dial = (UClass*)DialObject.Object->GeneratedClass;
+	}*/
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ButtonM(TEXT("StaticMesh'/Game/GUI/Meshes/Lock/LockButton.LockButton'"));
 
 	Button = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Button"));
 	Button->SetStaticMesh(ButtonM.Object);
@@ -21,12 +28,15 @@ AVRButton::AVRButton(const FObjectInitializer& ObjectInitializer)
 
 	Button->AttachTo(Root);
 
-	ButtonText = ObjectInitializer.CreateDefaultSubobject<UTextRenderComponent>(this, TEXT("ButtonText"));
-	ButtonText->SetText("");
-	ButtonText->VerticalAlignment = EVerticalTextAligment::EVRTA_TextTop;
-	ButtonText->SetWorldRotation(FRotator(0, 180, 0));
-	ButtonText->AttachTo(Root);
-	ButtonText->SetRelativeLocation(FVector(-4, 0, 0));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> RingM(TEXT("StaticMesh'/Game/GUI/Meshes/Lock/LockRing.LockRing'"));
+
+	Ring = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Ring"));
+	Ring->SetStaticMesh(RingM.Object);
+
+	Ring->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Ring->SetCollisionObjectType(ECollisionChannel::ECC_EngineTraceChannel1);
+
+	Ring->AttachTo(Root);
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("Material'/Game/GUI/Materials/Mat_MetalButton2.Mat_MetalButton2'"));
 
@@ -35,24 +45,36 @@ AVRButton::AVRButton(const FObjectInitializer& ObjectInitializer)
 	ButtonMat->SetVectorParameterValue("Color", FLinearColor(1, 1, 1, 1));
 }
 
-void AVRButton::Tick(float DeltaSeconds)
+// Called when the game starts or when spawned
+void AVRLockDial::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AVRLockDial::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
 	Button->SetVisibility(bWidgetVisibility);
-	ButtonText->SetVisibility(bWidgetVisibility);
+	Ring->SetVisibility(bWidgetVisibility);
 
 	if (bWidgetVisibility)
+	{
 		Button->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Ring->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
 	else
+	{
 		Button->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Ring->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
-bool AVRButton::ButtonClicked()
+bool AVRLockDial::ButtonClicked()
 {
 	//If the widget is clicked, set bClicked to true
 	//to signal that this widget has been clicked
-	if (bWidgetClicked)
+	if (ComponentClicked == Button)
 	{
 		bClicked = true;
 		ButtonMat->SetVectorParameterValue("Color", FLinearColor(.1, .1, .1, 1));
@@ -71,30 +93,4 @@ bool AVRButton::ButtonClicked()
 	//I dont think that it works this way using this implementation
 
 	return false;
-}
-
-void AVRButton::SetButtonText(FString TextString)
-{
-	ButtonText->SetText(TextString);
-}
-
-void AVRButton::SetTextRelativeLocation(FVector Loc)
-{
-	ButtonText->SetRelativeLocation(Loc);
-}
-
-void AVRButton::SetTextScale(FVector Scale)
-{
-	ButtonText->SetXScale(Scale.X);
-	ButtonText->SetYScale(Scale.Y);
-}
-
-void AVRButton::SetButtonColor(FVector Color)
-{
-	ButtonMat->SetVectorParameterValue("Color", FLinearColor(Color.X, Color.Y, Color.Z, 1));
-}
-
-void AVRButton::SetTextColor(FVector Color)
-{
-	ButtonText->SetTextRenderColor(FColor(Color.X, Color.Y, Color.Z));
 }

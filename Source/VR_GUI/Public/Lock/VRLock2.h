@@ -11,25 +11,22 @@
 #include "VRKnob.h"
 #include "VRLockDial.h"
 #include "VRText.h"
-#include "VRLock.generated.h"
+#include "VRLock2.generated.h"
 
 UCLASS()
-class VR_GUI_API AVRLock : public AActor
+class VR_GUI_API AVRLock2 : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AVRLock(const FObjectInitializer& ObjectInitializer);
+	AVRLock2();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
-
-public:
-
 
 private:
 
@@ -45,12 +42,6 @@ private:
 	int32 EnteredComboVal2;
 	int32 EnteredComboVal3;
 
-	//Current value for lock
-	int32 KnobCurrentValue;
-
-	//The widgets needed for the app
-	AVRKnob* LockKnob;
-
 	AVRSlider* ComboSlider1;
 	AVRSlider* ComboSlider2;
 	AVRSlider* ComboSlider3;
@@ -59,13 +50,21 @@ private:
 	AVRText* CombinationText2;
 	AVRText* CombinationText3;
 
-	AVRText* LockDisplay1;
-	AVRText* LockDisplay2;
-	AVRText* LockDisplay3;
+	AVRLockDial* LockDial;
 
-	AVRText* CurrentValueText;
+	TArray<FString> ButtonTextArray;
+
+	AVRButton* DialButton0;
+	AVRButton* DialButton1;
+	AVRButton* DialButton2;
+	AVRButton* DialButton3;
+	AVRButton* DialButton4;
+	AVRButton* DialButton5;
+	AVRButton* DialButton6;
+	AVRButton* DialButton7;
+	AVRButton* DialButton8;
+	AVRButton* DialButton9;
 	
 	void ResetEnteredValues();
 	bool CheckCode();
-
 };

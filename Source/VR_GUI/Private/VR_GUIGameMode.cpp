@@ -18,4 +18,7 @@ void AVR_GUIGameMode::BeginPlay()
 
 	//Create Lock Application
 	Cast<AVRLock>(GetWorld()->SpawnActor(AVRLock::StaticClass()));
+
+	//Create Lock Application
+	Cast<AVRLock2>(GetWorld()->SpawnActor(AVRLock2::StaticClass()));
 }

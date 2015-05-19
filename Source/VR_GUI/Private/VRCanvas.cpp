@@ -51,6 +51,7 @@ void AVRCanvas::BeginPlay()
 	AddWidget(LayerButton, 360, 10, "LayerToggle", "AlwaysVisible");
 
 	BindWidgetToLayerToggle(LayerButton);
+	LayerButton->SetButtonText(" Next");
 
 	//-----------------------
 	//Widgets for editing Canvas Appearence
@@ -257,6 +258,11 @@ void AVRCanvas::AddWidget(AVRWidget* AWidget, float X, float Y, FString Name, FS
 	}
 	else
 		AlwaysVisibleLayer.WidgetsInLayer.Add(AWidget);
+}
+
+void AVRCanvas::MoveWidget(AVRWidget* AWidget, float X, float Y)
+{
+	AWidget->SetWidgetLocation(ConvertToWorldCoords(X, Y), X, Y);
 }
 
 AVRWidget* AVRCanvas::GetWidget(FString Name)

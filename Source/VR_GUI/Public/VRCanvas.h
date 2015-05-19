@@ -73,6 +73,7 @@ public:
 	AVRWidget* GetWidget(FString Name);
 	
 	void AddWidgetLayer(FString Name, bool bVisible);
+	void MoveWidget(AVRWidget* AWidget, float X, float Y);
 	FWidgetLayer* GetWidgetLayer(FString Name);
 	void SetWidgetLayerVisibility(FString LayerName, bool bValue);
 	void SetWidgetLayerVisibility(FWidgetLayer &LayerName, bool bValue);

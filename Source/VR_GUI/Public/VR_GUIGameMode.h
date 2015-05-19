@@ -4,6 +4,7 @@
 
 #include "GameFramework/GameMode.h"
 #include "VRLock.h"
+#include "VRLock2.h"
 #include "VR_GUIGameMode.generated.h"
 
 /**

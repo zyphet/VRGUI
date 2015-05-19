@@ -16,6 +16,11 @@ void AVRLock::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Init to -1 to signify value hasnt been entered
+	EnteredComboVal1 = -1;
+	EnteredComboVal2 = -1;
+	EnteredComboVal3 = -1;
+
 	//Get the Player's Canvas
 	PlayerCanvas = Cast<AVRPawn>(Cast<AVRController>(GetWorld()->GetFirstPlayerController())->GetPawn())->GetCanvas();
 
@@ -29,11 +34,11 @@ void AVRLock::BeginPlay()
 	PlayerCanvas->AddWidget(LockKnob, PlayerCanvas->CanvasSizeX / 4, PlayerCanvas->CanvasSizeY / 2, "LockKnob", "UseLock");
 
 	//Text Display for Current Combination value
-	CurrentValue = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
-	PlayerCanvas->AddWidget(CurrentValue, PlayerCanvas->CanvasSizeX / 4 - 7, 7*PlayerCanvas->CanvasSizeY / 8, "CurrentValue", "UseLock");
+	CurrentValueText = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
+	PlayerCanvas->AddWidget(CurrentValueText, PlayerCanvas->CanvasSizeX / 4 - 7, 7 * PlayerCanvas->CanvasSizeY / 8, "CurrentValue", "UseLock");
 
-	CurrentValue->SetWidgetScale(FVector(1.5, 1.5, 1.5));
-	CurrentValue->SetText("0");
+	CurrentValueText->SetWidgetScale(FVector(1.5, 1.5, 1.5));
+	CurrentValueText->SetText("0");
 
 	//Sliders for setting combination
 	//Slider 1
@@ -82,22 +87,21 @@ void AVRLock::BeginPlay()
 	PlayerCanvas->AddWidget(LockDisplay1, 220, PlayerCanvas->CanvasSizeY / 4 + 30, "LockDisplay1", "UseLock");
 
 	LockDisplay1->SetWidgetScale(FVector(2, 2, 2));
-	LockDisplay1->SetText("0");
+	LockDisplay1->SetText("");
 
 	//Text 2
 	LockDisplay2 = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
 	PlayerCanvas->AddWidget(LockDisplay2, 220, 2*PlayerCanvas->CanvasSizeY / 4 + 30, "LockDisplay2", "UseLock");
 
 	LockDisplay2->SetWidgetScale(FVector(2, 2, 2));
-	LockDisplay2->SetText("0");
+	LockDisplay2->SetText("");
 
 	//Text 3
 	LockDisplay3 = Cast<AVRText>(GetWorld()->SpawnActor(AVRText::StaticClass()));
 	PlayerCanvas->AddWidget(LockDisplay3, 220, 3*PlayerCanvas->CanvasSizeY / 4 + 30, "LockDisplay3", "UseLock");
 
 	LockDisplay3->SetWidgetScale(FVector(2, 2, 2));
-	LockDisplay3->SetText("0");
-
+	LockDisplay3->SetText("");
 }
 
 // Called every frame
@@ -113,8 +117,69 @@ void AVRLock::Tick( float DeltaTime )
 	CombinationText2->SetText(FString::Printf(TEXT("%d"), CombinationVal2));
 	CombinationText3->SetText(FString::Printf(TEXT("%d"), CombinationVal3));
 
-	KnobCurrentValue = FMath::Ceil(9 * LockKnob->GetAngle() / 360);
+	KnobCurrentValue = FMath::Floor((9+1) * LockKnob->GetAngle() / 360);
 
-	CurrentValue->SetText(FString::Printf(TEXT("%d"), KnobCurrentValue));
+	CurrentValueText->SetText(FString::Printf(TEXT("%d"), KnobCurrentValue));
 
+	if (LockKnob->ButtonClicked())
+	{
+
+		if (EnteredComboVal1 == -1)
+		{
+			EnteredComboVal1 = KnobCurrentValue;
+			LockDisplay1->SetText(FString::Printf(TEXT("%d"), EnteredComboVal1));
+		}
+		else if (EnteredComboVal2 == -1)
+		{
+			EnteredComboVal2 = KnobCurrentValue;
+			LockDisplay2->SetText(FString::Printf(TEXT("%d"), EnteredComboVal2));
+		}
+		else if (EnteredComboVal3 == -1)
+		{
+			EnteredComboVal3 = KnobCurrentValue;
+			LockDisplay3->SetText(FString::Printf(TEXT("%d"), EnteredComboVal3));
+
+			//Finished entering code
+			if (CheckCode())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Correct Combination!");
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Bad Combination!");
+			}
+		}
+		else
+		{
+			//Reset
+			ResetEnteredValues();
+		}
+	}
+}
+
+void AVRLock::ResetEnteredValues()
+{
+	EnteredComboVal1 = -1;
+	EnteredComboVal2 = -1;
+	EnteredComboVal3 = -1;
+
+	LockDisplay1->SetText("");
+	LockDisplay2->SetText("");
+	LockDisplay3->SetText("");
+}
+
+bool AVRLock::CheckCode()
+{
+	if (EnteredComboVal1 == CombinationVal1)
+	{
+		if (EnteredComboVal2 == CombinationVal2)
+		{
+			if (EnteredComboVal3 == CombinationVal3)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

@@ -18,13 +18,17 @@ class VR_GUI_API AVRButton : public AVRWidget
 
 public:
 	void SetButtonText(FString TextString);
+	void SetTextRelativeLocation(FVector Loc);
+	void SetTextScale(FVector Scale);
+	void SetButtonColor(FVector Color);
+	void SetTextColor(FVector Color);
+
 	bool ButtonClicked();
 
-private:
-	class UStaticMeshComponent* Button;
+	UStaticMeshComponent* Button;
 	UMaterialInstanceDynamic* ButtonMat;
 
 	bool bClicked;
-	//UTextRenderComponent ButtonText;
+	UTextRenderComponent* ButtonText;
 
 };
