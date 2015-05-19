@@ -18,6 +18,8 @@ public:
 
 	FVector GetWidgetCanvasCoords();
 
+	FString GetWidgetName();
+
 	void SetWidgetName(FString name);
 	void SetWidgetLocation(FVector loc, float X, float Y);
 	void SetWidgetScale(FVector scale);

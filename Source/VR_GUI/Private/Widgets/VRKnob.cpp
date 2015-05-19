@@ -42,7 +42,7 @@ AVRKnob::AVRKnob(const FObjectInitializer& ObjectInitializer)
 
 	Marker->AttachTo(Root);
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("Material'/Game/GUI/Materials/Mat_Button.Mat_Button'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("Material'/Game/GUI/Materials/Mat_MetalButton2.Mat_MetalButton2'"));
 
 	ButtonMat = Button->CreateDynamicMaterialInstance(0, Mat.Object);
 
@@ -58,6 +58,24 @@ void AVRKnob::Tick(float DeltaSeconds)
 	Button->SetVisibility(bWidgetVisibility);
 	Marker->SetVisibility(bWidgetVisibility);
 	Ring->SetVisibility(bWidgetVisibility);
+
+	if (bWidgetVisibility)
+	{
+		Button->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Marker->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Ring->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		Button->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Marker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Ring->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+float AVRKnob::GetAngle()
+{
+	return KnobAngle;
 }
 
 bool AVRKnob::ButtonClicked()
@@ -67,7 +85,7 @@ bool AVRKnob::ButtonClicked()
 	if (ComponentClicked == Button)
 	{
 		bClicked = true;
-		ButtonMat->SetVectorParameterValue("Color", FLinearColor(1, 0, 0, 1));
+		ButtonMat->SetVectorParameterValue("Color", FLinearColor(.1, .1, .1, 1));
 		return false;
 	}
 	//to determine when button is released, which is when we return true
@@ -107,16 +125,17 @@ void AVRKnob::MoveMarker()
 
 			Rot = FRotator(0, 0, Angle);
 
-			if (GEngine)
+			/*if (GEngine)
 			{
 				GEngine->ClearOnScreenDebugMessages();
 				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::Printf(TEXT("Angle: %f ATan: %f"), Angle, FMath::Atan(temp.Y / temp.X)));
 				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::Printf(TEXT("X: %f Y: %f"), temp.X, temp.Y));
-			}
+			}*/
 
 			Rot.Normalize();
 
 			Marker->SetRelativeRotation(Rot);
+			KnobAngle = Angle;
 		}
 	}
 }

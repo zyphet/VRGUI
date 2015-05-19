@@ -21,9 +21,7 @@ class VR_GUI_API AVRPawn : public APawn
 	//Acts as root (wont actually collide with things)
 	USphereComponent* CollisionComp;
 
-	//Good default location
-	//200, -130, 200
-	AVRCanvas* Canvas;
+	AVRCanvas* PlayerCanvas;
 
 	void MouseClick();
 	void MouseRelease();
